@@ -1,0 +1,14 @@
+{
+    "name": "facebook ext",
+    "version": "1.0",
+    "description": "uongsuadaubung",
+    "content_scripts":[
+      {
+        "matches": ["https://*.facebook.com/*"],
+        "js": ["content.js"],
+  
+        "run_at": "document_end"
+      }
+    ],
+    "manifest_version": 2
+  }

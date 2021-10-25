@@ -1,6 +1,9 @@
 let stringAds = [
     "Post you may like",
     "Suggested for you",
+    "Sponsored",
+    "Videos just for you",
+    "Your saved videos on Facebook Watch",
     "Gợi ý cho bạn"
 ]
 let isRuning = false
@@ -13,11 +16,15 @@ window.onscroll = function () {
 removeAds = () => {
     if (!isRuning) {
         isRuning = true
-        meow = document.querySelectorAll("[data-pagelet]");
-    
+        if (location.pathname === '/watch/') {
+            meow = document.querySelectorAll('[class="j83agx80 cbu4d94t"]')
+        }else if (location.pathname === '/') {
+            //đây là trang chủ
+            meow = document.querySelectorAll("[data-pagelet]");
+        }
         meow.forEach((ele) => {
             Promise.all(stringAds.map(ads=>{
-                if (ele.innerHTML.indexOf(ads) !== -1){
+                if (ele && ele.innerText.indexOf(ads) !== -1){
                     ele.remove()
                     console.log("Meow mewo đã xoá quảng cáo")
                 }
@@ -35,9 +42,16 @@ removeAds = () => {
 }
 
 changeLink = () => {
-    let a = document.getElementsByTagName('a')
-    a[0].onclick = () => {location.replace('https://www.facebook.com/?sk=h_chr')}
-    a[1].onclick = () => {location.replace('https://www.facebook.com/?sk=h_chr')}
+    let atags = document.getElementsByTagName('a')
+    for (const a of atags) {
+        if(a.href === 'https://www.facebook.com/'){
+            a.href = 'https://www.facebook.com/?sk=h_chr'
+            a.onclick = () => {location.replace('https://www.facebook.com/?sk=h_chr')}
+        }
+    }
 }
-removeAds()
-changeLink()
+window.onload = ()=>{
+    removeAds()
+    changeLink()
+}
+

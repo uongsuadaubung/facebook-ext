@@ -4,6 +4,7 @@ let stringAds = [
     "Sponsored",
     "Videos just for you",
     "Your saved videos on Facebook Watch",
+    "People You May Know",
     "Gợi ý cho bạn"
 ]
 let isRuning = false

@@ -70,7 +70,7 @@ window.onload = async function() {
     }
 
     most_recent_ele.addEventListener("change", function() {
-        save('most_recent', most_recent.checked)
+        save('most_recent', most_recent_ele.checked)
     })
     limit_amount_ele.addEventListener("change", function() {
         save('amount', Number(limit_amount_ele.value))

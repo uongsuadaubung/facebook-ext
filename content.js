@@ -68,7 +68,7 @@
         }
     }
     window.onload = () => {
-        document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
+        // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
     }

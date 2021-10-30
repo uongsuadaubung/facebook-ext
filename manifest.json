@@ -1,14 +1,29 @@
 {
-    "name": "facebook ext",
-    "version": "1.0",
-    "description": "uongsuadaubung",
-    "content_scripts":[
-      {
-        "matches": ["https://*.facebook.com/*"],
-        "js": ["content.js"],
-  
-        "run_at": "document_end"
-      }
-    ],
-    "manifest_version": 2
-  }
+  "name": "facebook ext",
+  "version": "1.0",
+  "description": "uongsuadaubung",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.facebook.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "manifest_version": 2,
+  "icons": {
+    "16": "16.png",
+    "48": "48.png",
+    "128": "128.png"
+  },
+  "browser_action": {
+    "default_icon": "16.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage"
+  ]
+}

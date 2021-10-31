@@ -5,19 +5,6 @@ window.onload = async function() {
     let remove_post_ele = document.getElementById("remove_post")
     let btn_add_ele = document.getElementById("btn_add")
 
-    let save = function (key, value) {
-        let data= {}
-        data[key] = value
-        chrome.storage.sync.set(data)
-    }
-    let load = async (key)=>{
-        return await new Promise(resolve => {
-            chrome.storage.sync.get([key], item =>{
-                resolve(item[key])
-            })
-        })
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////
     let isMostRecent = await load('most_recent')
     if (isMostRecent === undefined){
@@ -130,23 +117,23 @@ window.onload = async function() {
         let inputkeyword = document.getElementById('inputkeyword')
         let input = inputkeyword.value
         if (string_ads.findIndex(i=>i===input)!==-1){
-            alertManager('Keyword đã tồn tại')
+            showAlert('Keyword đã tồn tại')
             return
         }
         if (input){
             addToTable(input, 'add')
             inputkeyword.value = ''
         }else {
-            alertManager('Keyword phải chứa ký tự')
+            showAlert('Keyword phải chứa ký tự')
         }
 
     })
-    let alertManager = (message)=>{
+    let showAlert = (message, timeout = 2000)=>{
         let alert = document.getElementById('alert_danger')
         alert.classList.remove('d-none')
         alert.innerText = message
         setTimeout(()=>{
             alert.classList.add('d-none')
-        },2000)
+        },timeout)
     }
 }

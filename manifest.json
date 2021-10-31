@@ -8,6 +8,7 @@
         "https://*.facebook.com/*"
       ],
       "js": [
+        "util.js",
         "content.js"
       ],
       "run_at": "document_start"
@@ -15,12 +16,12 @@
   ],
   "manifest_version": 2,
   "icons": {
-    "16": "16.png",
-    "48": "48.png",
-    "128": "128.png"
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
   },
   "browser_action": {
-    "default_icon": "16.png",
+    "default_icon": "icons/16.png",
     "default_popup": "popup.html"
   },
   "permissions": [

@@ -1,11 +1,4 @@
 (async ()=>{
-    let load = async (key)=>{
-        return await new Promise(resolve => {
-            chrome.storage.sync.get([key], item =>{
-                resolve(item[key])
-            })
-        })
-    }
     let most_recent = (await load('most_recent')) ?? true
     if (most_recent === true && location.pathname === '/' && !location.search) {
         location.replace('https://www.facebook.com/?sk=h_chr')
@@ -79,11 +72,32 @@
             }
         }
     }
+    let encryptName = name =>{
+        return name.split('').sort(()=>0.5 - Math.random()).join('')
+    }
+    let hideName = ()=>{
+        let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
+        for (const name of span) {
+            if (!name.isEncrypted){
+                name.backup = name.innerText
+                name.encrypt = encryptName(name.innerText)
+                name.innerText = name.encrypt
+                name.isEncrypted = true
+                name.onmouseover = function () {
+                    name.innerText = name.backup
+                }
+                name.onmouseout = function (){
+                    name.innerText = name.encrypt
+                }
+            }
+        }
+    }
     window.onload = () => {
-        document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
+        // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
+        setInterval(hideName, 5000)
     }
-
+//let a = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span') lấy danh sách
 
 })()

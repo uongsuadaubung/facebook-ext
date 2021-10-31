@@ -87,7 +87,7 @@
             while (nodeDiv.parentNode.nodeName !== 'A'){
                 nodeDiv = nodeDiv.parentNode
             }
-            if (!nodeDiv.isEncrypted || (!nodeDiv.isHover && name.innerText !== name.encrypt)) {
+            if (!nodeDiv.isEncrypted || (!nodeDiv.isHover && name.innerText !== nodeDiv.encrypt)) {
                 nodeDiv.isEncrypted ??= true
                 nodeDiv.backupName ??= name.innerText
                 nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)

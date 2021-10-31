@@ -24,6 +24,7 @@
     "default_icon": "icons/16.png",
     "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "permissions": [
     "storage"
   ]

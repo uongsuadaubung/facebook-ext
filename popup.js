@@ -21,8 +21,8 @@ window.onload = async function() {
     /////////////////////////////////////////////////////////////////////////////////////
     let isFreezeNewsFeed = await load('freeze_newsfeed')
     if (isFreezeNewsFeed === undefined){
-        save('freeze_newsfeed', true)
-        isFreezeNewsFeed = true
+        save('freeze_newsfeed', false)
+        isFreezeNewsFeed = false
     }
     if (isFreezeNewsFeed){
         freeze_newsfeed_ele.checked = true

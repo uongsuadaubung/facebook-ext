@@ -1,6 +1,5 @@
 (async ()=>{
-    let freezeNewsFeed = (await load('freeze_newsfeed')) ?? true
-    console.log(freezeNewsFeed)
+    let freezeNewsFeed = (await load('freeze_newsfeed')) ?? false
     if (freezeNewsFeed){
         chrome.webRequest.onBeforeRequest.addListener(
             function(details) { return {cancel: true}; },

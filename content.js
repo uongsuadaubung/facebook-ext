@@ -102,16 +102,20 @@
     let hideImage= () =>{
         let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
         for (const img of images) {
-            if (!img.isHide || (!img.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")){
-                img.isHide ??= true
-                img.backup ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            let nodeA = img.parentNode // ở đây dùng nodeA mà bên trên không dùng vì tránh gán đè event
+            while (nodeA.nodeName !== 'A'){
+                nodeA = nodeA.parentNode
+            }
+            if (!nodeA.isHideImage || (!nodeA.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")){
+                nodeA.isHideImage ??= true
+                nodeA.backupImage ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
-                img.onmouseover = ()=>{
-                    img.isHover = true
-                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', img.backup);
+                nodeA.onmouseover = ()=>{
+                    nodeA.isHover = true
+                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
                 }
-                img.onmouseout=()=>{
-                    img.isHover = false
+                nodeA.onmouseout=()=>{
+                    nodeA.isHover = false
                     img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
                 }
             }

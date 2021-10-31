@@ -115,15 +115,17 @@ window.onload = async function() {
         deletebtn.onclick = ()=>{
             let index = string_ads.findIndex(i=>i===value)
             if (index!== -1){
-                string_ads.splice(index,1)
+                let value = string_ads.splice(index,1)
                 let row = document.getElementById('row_'+rowCount)
                 row.parentNode.removeChild(row)
                 save('string_ads', string_ads)
+                sendMessage('toContent',{message: "string_ads", method:"delete", value: value[0]})
             }
         }
         if (method === 'add'){ // add || load
             string_ads.push(value)
             save('string_ads', string_ads)
+            sendMessage('toContent',{message: "string_ads", method, value})
         }
         cell1.innerHTML = value;
         cell2.appendChild(deletebtn)
@@ -133,13 +135,16 @@ window.onload = async function() {
     }
     most_recent_ele.addEventListener("change", function() {
         save('most_recent', most_recent_ele.checked)
+        sendMessage('toContent',{message: "most_recent", value: most_recent_ele.checked})
     })
     freeze_newsfeed_ele.addEventListener("change", function() {
         save('freeze_newsfeed', freeze_newsfeed_ele.checked)
-        reload()
+        sendMessage('toContent',{message: "freeze_newsfeed", value: freeze_newsfeed_ele.checked})
+        setTimeout(reload, 50)
     })
     limit_amount_ele.addEventListener("change", function() {
         save('amount', Number(limit_amount_ele.value))
+        sendMessage('toContent',{message: "amount", value: Number(limit_amount_ele.value)})
     })
     limit_post_ele.addEventListener("change", function() {
         let res = limit_post_ele.checked
@@ -149,6 +154,7 @@ window.onload = async function() {
             document.getElementById("group_limit_amount").classList.add("d-none");
         }
         save('limit_post', res)
+        sendMessage('toContent',{message: "limit_post", value:res})
     })
     hide_contact_ele.addEventListener("change", function() {
         let res = hide_contact_ele.checked
@@ -158,13 +164,16 @@ window.onload = async function() {
             document.getElementById("group_contact").classList.add("d-none");
         }
         save('hide_contact', res)
+        sendMessage('toContent',{message: "hide_contact", value:res})
     })
 
     hide_contact_name_ele.addEventListener('change',()=>{
         save('hide_contact_name', hide_contact_name_ele.checked)
+        sendMessage('toContent',{message: "hide_contact_name", value: hide_contact_name_ele.checked})
     })
     hide_contact_image_ele.addEventListener('change',()=>{
         save('hide_contact_image', hide_contact_image_ele.checked)
+        sendMessage('toContent',{message: "hide_contact_image", value: hide_contact_image_ele.checked})
     })
 
     remove_post_ele.addEventListener("change", function() {
@@ -175,6 +184,7 @@ window.onload = async function() {
             document.getElementById("group_keywords").classList.add("d-none");
         }
         save('remove_post', res)
+        sendMessage('toContent',{message: "remove_post", value:res})
     })
     btn_add_ele.addEventListener('click', ()=>{
         let inputkeyword = document.getElementById('inputkeyword')

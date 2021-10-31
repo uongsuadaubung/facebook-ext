@@ -142,4 +142,50 @@
 
     }
     sendMessage("todo","show")
+    onMessage['addListener']( request => {
+        switch (request.message) {
+            case "most_recent":{
+                most_recent = request.value
+                break
+            }
+            case "freeze_newsfeed":{
+                location.reload()
+                break
+            }
+            case "limit_post":{
+                limit_post = request.value
+                break
+            }
+            case "amount":{
+                maxPost = request.value
+                break
+            }
+            case "hide_contact":{
+                hide_contact = request.value
+                break
+            }
+            case "hide_contact_name":{
+                hide_contact_name = request.value
+                break
+            }
+            case "hide_contact_image":{
+                hide_contact_image = request.value
+                break
+            }
+            case "remove_post":{
+                remove_post = request.value
+                break
+            }
+            case "string_ads":{
+                if (request.method === 'add'){
+                    stringAds.push(request.value)
+                }else {
+                    stringAds = stringAds.filter(i=> i!== request.value)
+                }
+                break
+            }
+        }
+
+    });
+
 })()

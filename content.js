@@ -20,6 +20,9 @@
     let limit_post = (await load('limit_post')) ?? true
     let remove_post = (await load('remove_post')) ?? true
 
+    let hide_contact = (await load('hide_contact')) ?? true
+
+
     window.onscroll = function () {
         // called when the window is scrolled.
         removeAds()
@@ -75,18 +78,20 @@
     let encryptName = name =>{
         return name.split('').sort(()=>0.5 - Math.random()).join('')
     }
-    let hideName = ()=>{
+    let hideName = () => {
         let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
         for (const name of span) {
-            if (!name.isEncrypted){
-                name.backup = name.innerText
-                name.encrypt = encryptName(name.innerText)
+            if (!name.isEncrypted || (!name.isHover && name.innerText !== name.encrypt)) {
+                name.isEncrypted ??= true
+                name.backup ??= name.innerText
+                name.encrypt ??= encryptName(name.backup)
                 name.innerText = name.encrypt
-                name.isEncrypted = true
                 name.onmouseover = function () {
+                    name.isHover = true
                     name.innerText = name.backup
                 }
-                name.onmouseout = function (){
+                name.onmouseout = function () {
+                    name.isHover = false
                     name.innerText = name.encrypt
                 }
             }
@@ -96,7 +101,11 @@
         // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
-        setInterval(hideName, 5000)
+        if (hide_contact){
+            hideName()
+            setInterval(hideName, 1000)
+        }
+
     }
 //let a = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span') lấy danh sách
 

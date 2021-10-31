@@ -4,6 +4,7 @@ window.onload = async function() {
     let limit_post_ele = document.getElementById("limit_post")
     let remove_post_ele = document.getElementById("remove_post")
     let btn_add_ele = document.getElementById("btn_add")
+    let hide_contact_ele = document.getElementById("hide_contact")
 
     ///////////////////////////////////////////////////////////////////////////////////////
     let isMostRecent = await load('most_recent')
@@ -32,6 +33,15 @@ window.onload = async function() {
     }
     if (amount) {
         limit_amount_ele.value = amount
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    let isHideContact = await load('hide_contact')
+    if (isHideContact === undefined){
+        save('hide_contact', true)
+        isHideContact = true
+    }
+    if (isHideContact){
+        hide_contact_ele.checked = true
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     let isRemovePost = await load('remove_post')
@@ -103,6 +113,9 @@ window.onload = async function() {
             document.getElementById("group_limit_amount").classList.add("d-none");
         }
         save('limit_post', res)
+    })
+    hide_contact_ele.addEventListener('change',()=>{
+        save('hide_contact', hide_contact_ele.checked)
     })
     remove_post_ele.addEventListener("change", function() {
         let res = remove_post_ele.checked

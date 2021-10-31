@@ -4,7 +4,9 @@ window.onload = async function() {
     let limit_post_ele = document.getElementById("limit_post")
     let remove_post_ele = document.getElementById("remove_post")
     let btn_add_ele = document.getElementById("btn_add")
-    let hide_contact_ele = document.getElementById("hide_contact")
+    let hide_contact_name_ele = document.getElementById("hide_contact_name")
+    let hide_contact_image_ele = document.getElementById("hide_contact_image")
+    let hide_contact = document.getElementById("hide_contact")
 
     ///////////////////////////////////////////////////////////////////////////////////////
     let isMostRecent = await load('most_recent')
@@ -34,14 +36,34 @@ window.onload = async function() {
     if (amount) {
         limit_amount_ele.value = amount
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////
     let isHideContact = await load('hide_contact')
     if (isHideContact === undefined){
         save('hide_contact', true)
         isHideContact = true
     }
     if (isHideContact){
-        hide_contact_ele.checked = true
+        hide_contact.checked = true
+        document.getElementById('group_contact').classList.remove('d-none')
+
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    let isHideContactName = await load('hide_contact_name')
+    if (isHideContactName === undefined){
+        save('hide_contact_name', true)
+        isHideContactName = true
+    }
+    if (isHideContactName){
+        hide_contact_name_ele.checked = true
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    let isHideContactImage = await load('hide_contact_image')
+    if (isHideContactImage === undefined){
+        save('hide_contact_image', true)
+        isHideContactImage = true
+    }
+    if (isHideContactImage){
+        hide_contact_image_ele.checked = true
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     let isRemovePost = await load('remove_post')
@@ -114,9 +136,23 @@ window.onload = async function() {
         }
         save('limit_post', res)
     })
-    hide_contact_ele.addEventListener('change',()=>{
-        save('hide_contact', hide_contact_ele.checked)
+    hide_contact.addEventListener("change", function() {
+        let res = hide_contact.checked
+        if (res){
+            document.getElementById("group_contact").classList.remove("d-none");
+        }else {
+            document.getElementById("group_contact").classList.add("d-none");
+        }
+        save('hide_contact', res)
     })
+
+    hide_contact_name_ele.addEventListener('change',()=>{
+        save('hide_contact_name', hide_contact_name_ele.checked)
+    })
+    hide_contact_image_ele.addEventListener('change',()=>{
+        save('hide_contact_image', hide_contact_image_ele.checked)
+    })
+
     remove_post_ele.addEventListener("change", function() {
         let res = remove_post_ele.checked
         if (res){

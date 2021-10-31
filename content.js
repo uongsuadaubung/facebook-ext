@@ -21,6 +21,8 @@
     let remove_post = (await load('remove_post')) ?? true
 
     let hide_contact = (await load('hide_contact')) ?? true
+    let hide_contact_name = (await load('hide_contact_name')) ?? true
+    let hide_contact_image = (await load('hide_contact_image')) ?? true
 
 
     window.onscroll = function () {
@@ -97,16 +99,38 @@
             }
         }
     }
+    let hideImage= () =>{
+        let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
+        for (const img of images) {
+            if (!img.isHide || (!img.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")){
+                img.isHide ??= true
+                img.backup ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+                img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
+                img.onmouseover = ()=>{
+                    img.isHover = true
+                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', img.backup);
+                }
+                img.onmouseout=()=>{
+                    img.isHover = false
+                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
+                }
+            }
+
+        }
+    }
     window.onload = () => {
         // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
-        if (hide_contact){
+        if (hide_contact && hide_contact_name){
             hideName()
             setInterval(hideName, 1000)
         }
+        if (hide_contact && hide_contact_image){
+            hideImage()
+            setInterval(hideImage, 1000)
+        }
 
     }
-//let a = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span') lấy danh sách
 
 })()

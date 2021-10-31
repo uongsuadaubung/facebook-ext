@@ -131,6 +131,7 @@
             setInterval(hideImage, 1000)
         }
 
+
     }
 
 })()

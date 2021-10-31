@@ -6,7 +6,8 @@ window.onload = async function() {
     let btn_add_ele = document.getElementById("btn_add")
     let hide_contact_name_ele = document.getElementById("hide_contact_name")
     let hide_contact_image_ele = document.getElementById("hide_contact_image")
-    let hide_contact = document.getElementById("hide_contact")
+    let hide_contact_ele = document.getElementById("hide_contact")
+    let freeze_newsfeed_ele = document.getElementById("freeze_newsfeed")
 
     ///////////////////////////////////////////////////////////////////////////////////////
     let isMostRecent = await load('most_recent')
@@ -16,6 +17,15 @@ window.onload = async function() {
     }
     if (isMostRecent) {
         most_recent_ele.checked = true
+    }
+    /////////////////////////////////////////////////////////////////////////////////////
+    let isFreezeNewsFeed = await load('freeze_newsfeed')
+    if (isFreezeNewsFeed === undefined){
+        save('freeze_newsfeed', true)
+        isFreezeNewsFeed = true
+    }
+    if (isFreezeNewsFeed){
+        freeze_newsfeed_ele.checked = true
     }
     //////////////////////////////////////////////////////////////////////////////////////
     let isLimitPost = await load('limit_post')
@@ -43,7 +53,7 @@ window.onload = async function() {
         isHideContact = true
     }
     if (isHideContact){
-        hide_contact.checked = true
+        hide_contact_ele.checked = true
         document.getElementById('group_contact').classList.remove('d-none')
 
     }
@@ -124,6 +134,10 @@ window.onload = async function() {
     most_recent_ele.addEventListener("change", function() {
         save('most_recent', most_recent_ele.checked)
     })
+    freeze_newsfeed_ele.addEventListener("change", function() {
+        save('freeze_newsfeed', freeze_newsfeed_ele.checked)
+        chrome.runtime.reload()
+    })
     limit_amount_ele.addEventListener("change", function() {
         save('amount', Number(limit_amount_ele.value))
     })
@@ -136,8 +150,8 @@ window.onload = async function() {
         }
         save('limit_post', res)
     })
-    hide_contact.addEventListener("change", function() {
-        let res = hide_contact.checked
+    hide_contact_ele.addEventListener("change", function() {
+        let res = hide_contact_ele.checked
         if (res){
             document.getElementById("group_contact").classList.remove("d-none");
         }else {

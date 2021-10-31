@@ -122,11 +122,11 @@
         // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
-        if (hide_contact && hide_contact_name){
+        if (location.pathname === '/' && hide_contact && hide_contact_name){
             hideName()
             setInterval(hideName, 1000)
         }
-        if (hide_contact && hide_contact_image){
+        if (location.pathname === '/' && hide_contact && hide_contact_image){
             hideImage()
             setInterval(hideImage, 1000)
         }

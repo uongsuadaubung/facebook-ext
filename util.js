@@ -1,4 +1,5 @@
 (async ()=>{
+    window.chrome ??= chrome
     window.save ??= function (key, value) {
         let data= {}
         data[key] = value
@@ -12,11 +13,12 @@
         })
     }
     window.reload ??=  () => {
-        chrome.runtime.reload()
+        chrome['runtime'].reload()
     }
     window.sendMessage ??= (key, value) => {
         let obj = {}
         obj[key] = value
-        chrome.runtime.sendMessage(obj)
+        chrome['runtime'].sendMessage(obj)
     }
+    window.onMessage = chrome['runtime']['onMessage']
 })()

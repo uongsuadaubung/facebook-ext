@@ -7,4 +7,12 @@
             ["blocking"]
         );
     }
+    chrome.runtime.onMessage.addListener(request=>{
+        if (request.todo === "show"){
+            chrome.tabs.query({active:true, currentWindow:true}, tabs=>{
+                chrome.pageAction.show(tabs[0].id)
+            })
+        }
+    })
+
 })()

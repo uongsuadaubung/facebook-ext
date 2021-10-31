@@ -136,7 +136,7 @@ window.onload = async function() {
     })
     freeze_newsfeed_ele.addEventListener("change", function() {
         save('freeze_newsfeed', freeze_newsfeed_ele.checked)
-        chrome.runtime.reload()
+        reload()
     })
     limit_amount_ele.addEventListener("change", function() {
         save('amount', Number(limit_amount_ele.value))

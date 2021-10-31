@@ -11,4 +11,12 @@
             })
         })
     }
+    window.reload ??=  () => {
+        chrome.runtime.reload()
+    }
+    window.sendMessage ??= (key, value) => {
+        let obj = {}
+        obj[key] = value
+        chrome.runtime.sendMessage(obj)
+    }
 })()

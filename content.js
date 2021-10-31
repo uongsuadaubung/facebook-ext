@@ -130,15 +130,15 @@
         // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
-        if (location.pathname === '/' && hide_contact && hide_contact_name){
-            hideName()
-            setInterval(hideName, 1000)
-        }
-        if (location.pathname === '/' && hide_contact && hide_contact_image){
-            hideImage()
-            setInterval(hideImage, 1000)
-        }
+        setInterval(()=>{
+            if (location.pathname === '/' && hide_contact && hide_contact_name){
+                hideName()
+            }
+            if (location.pathname === '/' && hide_contact && hide_contact_image){
+                hideImage()
+            }
 
+        },1000)
 
     }
     sendMessage("todo","show")

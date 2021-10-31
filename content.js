@@ -11,7 +11,15 @@
         location.replace('https://www.facebook.com/?sk=h_chr')
     }
     //////////////////////////////////////////////////////////////////////////////
-    let stringAds = (await load('string_ads')) ?? []
+    let stringAds = (await load('string_ads')) ?? [
+        "Post you may like",
+        "Suggested for you",
+        "Sponsored",
+        "Videos just for you",
+        "Your saved videos on Facebook Watch",
+        "People You May Know",
+        "Gợi ý cho bạn"
+    ]
     let isRuning = false
     let meow = [] // total posts, btw i love cats
     let maxPost = (await load('amount')) ?? 30
@@ -36,7 +44,7 @@
                 Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
                     if (ele && ele.innerText.indexOf(ads) !== -1) {
                         ele.remove()
-                        console.log("Meow meow đã xoá quảng cáo")
+                        console.log("Meow meow đã xoá quảng cáo", ele.innerText.slice(0,20))
                     }
                 })).then()
             })
@@ -63,12 +71,16 @@
                     a.onclick = () => {
                         location.replace('https://www.facebook.com/?sk=h_chr')
                     }
+                }else if (a.href === 'https://www.facebook.com/watch/'){
+                    a.onclick = () =>{
+                        location.replace('https://www.facebook.com/watch/')
+                    }
                 }
             }
         }
     }
     window.onload = () => {
-        // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
+        document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
     }

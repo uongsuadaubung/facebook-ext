@@ -83,18 +83,22 @@
     let hideName = () => {
         let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
         for (const name of span) {
-            if (!name.isEncrypted || (!name.isHover && name.innerText !== name.encrypt)) {
-                name.isEncrypted ??= true
-                name.backup ??= name.innerText
-                name.encrypt ??= encryptName(name.backup)
-                name.innerText = name.encrypt
-                name.onmouseover = function () {
-                    name.isHover = true
-                    name.innerText = name.backup
+            let nodeDiv = name.parentNode
+            while (nodeDiv.parentNode.nodeName !== 'A'){
+                nodeDiv = nodeDiv.parentNode
+            }
+            if (!nodeDiv.isEncrypted || (!nodeDiv.isHover && name.innerText !== name.encrypt)) {
+                nodeDiv.isEncrypted ??= true
+                nodeDiv.backupName ??= name.innerText
+                nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
+                name.innerText = nodeDiv.encrypt
+                nodeDiv.onmouseover = function () {
+                    nodeDiv.isHover = true
+                    name.innerText = nodeDiv.backupName
                 }
-                name.onmouseout = function () {
-                    name.isHover = false
-                    name.innerText = name.encrypt
+                nodeDiv.onmouseout = function () {
+                    nodeDiv.isHover = false
+                    name.innerText = nodeDiv.encrypt
                 }
             }
         }

@@ -5,7 +5,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.facebook.com/*"
+        "*://*.facebook.com/*"
       ],
       "js": [
         "util.js",

@@ -190,5 +190,5 @@
         }
 
     });
-
+    //TODO: sau khi nhận được event thì chạy lại 1 số thứ tương ứng
 })()

@@ -35,7 +35,7 @@
                 notScanned = document.querySelectorAll('div:not(.done)[data-pagelet^="FeedUnit_"]');
             }
             notScanned.forEach((ele) => {
-                ele.setAttribute("class", "done");
+                ele.classList.add("done");
                 Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
                     if (ele && ele.innerText.indexOf(ads) !== -1) {
                         ele.remove()
@@ -43,10 +43,15 @@
                     }
                 })).then()
             })
-            notScanned.length = 0
+
             if (isLimitPost) {
-                let scanned = document.querySelectorAll('div.done[data-pagelet^="FeedUnit_"]');
-                let dif = scanned.length - maxPost
+                let scanned
+                if (location.pathname === '/watch/') {
+                    scanned = document.querySelectorAll('div.j83agx80.cbu4d94t.done')
+                } else if (location.pathname === '/') {
+                    scanned = document.querySelectorAll('div.done[data-pagelet^="FeedUnit_"]');
+                }
+                let dif = scanned.length + notScanned.length - maxPost
                 if (dif > 0) {
                     for (let i = 0; i < dif; i++) {
                         scanned[i].remove()
@@ -54,6 +59,7 @@
                 }
                 scanned.length = 0
             }
+            notScanned.length = 0
             isRuning = false
         }
 
@@ -82,22 +88,24 @@
     let hideName = () => {
         let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
         for (const name of span) {
-            let nodeDiv = name.parentNode
-            while (nodeDiv.parentNode.nodeName !== 'A'){
-                nodeDiv = nodeDiv.parentNode
-            }
-            if (!nodeDiv.isEncrypted || (!nodeDiv.isHover && name.innerText !== nodeDiv.encrypt)) {
-                nodeDiv.isEncrypted ??= true
-                nodeDiv.backupName ??= name.innerText
-                nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
-                name.innerText = nodeDiv.encrypt
-                nodeDiv.onmouseover = function () {
-                    nodeDiv.isHover = true
-                    name.innerText = nodeDiv.backupName
+            if (name.innerText) {
+                let nodeDiv = name.parentNode
+                while (nodeDiv.parentNode.nodeName !== 'A') {
+                    nodeDiv = nodeDiv.parentNode
                 }
-                nodeDiv.onmouseout = function () {
-                    nodeDiv.isHover = false
+                if (!nodeDiv.isEncrypted || (!nodeDiv.isHover && name.innerText !== nodeDiv.encrypt)) {
+                    nodeDiv.isEncrypted ??= true
+                    nodeDiv.backupName ??= name.innerText
+                    nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
                     name.innerText = nodeDiv.encrypt
+                    nodeDiv.onmouseover = function () {
+                        nodeDiv.isHover = true
+                        name.innerText = nodeDiv.backupName
+                    }
+                    nodeDiv.onmouseout = function () {
+                        nodeDiv.isHover = false
+                        name.innerText = nodeDiv.encrypt
+                    }
                 }
             }
         }
@@ -182,7 +190,7 @@
                 isAllowRemovePost = request.value
                 break
             }
-            case "string_ads":{
+            case "string_ads":{ //tested,worked
                 if (request.method === 'add'){
                     stringAds.push(request.value)
                 }else {

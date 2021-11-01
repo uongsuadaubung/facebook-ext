@@ -24,10 +24,6 @@
     let isAllowHideContact_image = (await load('hide_contact_image')) ?? true
 
 
-    window.onscroll = function () {
-        // called when the window is scrolled.
-        removeAds()
-    }
     let removeAds = () => {
         if (!isRuning && isAllowRemovePost) {
             isRuning = true
@@ -133,16 +129,23 @@
         // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
         changeLink()
         removeAds()
-        setInterval(()=>{
-            if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_name){
-                hideName()
-            }
-            if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_image){
-                hideImage()
-            }
 
-        },1000)
-
+        if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_image) {
+            hideImage()
+            setTimeout(hideImage,1000)
+            setTimeout(hideImage,2000)
+            // intervalHideImage = setInterval(hideImage, 1000)
+        }
+        if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_name) {
+            hideName()
+            setTimeout(hideName,1000)
+            setTimeout(hideName,2000)
+            // intervalHideName = setInterval(hideName, 1000)
+        }
+    }
+    window.onscroll = function () {
+        // called when the window is scrolled.
+        removeAds()
     }
     sendMessage("todo","show")
     onMessage['addListener']( request => {

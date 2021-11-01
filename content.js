@@ -16,12 +16,12 @@
     let isRuning = false
     let maxPost = (await load('amount')) ?? 30
 
-    let limit_post = (await load('limit_post')) ?? true
-    let remove_post = (await load('remove_post')) ?? true
+    let isLimitPost = (await load('limit_post')) ?? true
+    let isAllowRemovePost = (await load('remove_post')) ?? true
 
-    let hide_contact = (await load('hide_contact')) ?? true
-    let hide_contact_name = (await load('hide_contact_name')) ?? true
-    let hide_contact_image = (await load('hide_contact_image')) ?? true
+    let isAllowHideContact = (await load('hide_contact')) ?? true
+    let isAllowHideContact_name = (await load('hide_contact_name')) ?? true
+    let isAllowHideContact_image = (await load('hide_contact_image')) ?? true
 
 
     window.onscroll = function () {
@@ -29,7 +29,7 @@
         removeAds()
     }
     let removeAds = () => {
-        if (!isRuning && remove_post) {
+        if (!isRuning && isAllowRemovePost) {
             isRuning = true
             let notScanned = []
             if (location.pathname === '/watch/') {
@@ -48,7 +48,7 @@
                 })).then()
             })
             notScanned.length = 0
-            if (limit_post) {
+            if (isLimitPost) {
                 let scanned = document.querySelectorAll('div.done[data-pagelet^="FeedUnit_"]');
                 let dif = scanned.length - maxPost
                 if (dif > 0) {
@@ -134,10 +134,10 @@
         changeLink()
         removeAds()
         setInterval(()=>{
-            if (location.pathname === '/' && hide_contact && hide_contact_name){
+            if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_name){
                 hideName()
             }
-            if (location.pathname === '/' && hide_contact && hide_contact_image){
+            if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_image){
                 hideImage()
             }
 
@@ -156,7 +156,7 @@
                 break
             }
             case "limit_post":{
-                limit_post = request.value
+                isLimitPost = request.value
                 break
             }
             case "amount":{
@@ -164,19 +164,19 @@
                 break
             }
             case "hide_contact":{
-                hide_contact = request.value
+                isAllowHideContact = request.value
                 break
             }
             case "hide_contact_name":{
-                hide_contact_name = request.value
+                isAllowHideContact_name = request.value
                 break
             }
             case "hide_contact_image":{
-                hide_contact_image = request.value
+                isAllowHideContact_image = request.value
                 break
             }
             case "remove_post":{
-                remove_post = request.value
+                isAllowRemovePost = request.value
                 break
             }
             case "string_ads":{

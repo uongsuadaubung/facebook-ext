@@ -14,7 +14,6 @@
         "Gợi ý cho bạn"
     ]
     let isRuning = false
-    let meow = [] // total posts, btw i love cats
     let maxPost = (await load('amount')) ?? 30
 
     let limit_post = (await load('limit_post')) ?? true
@@ -32,13 +31,15 @@
     let removeAds = () => {
         if (!isRuning && remove_post) {
             isRuning = true
+            let notScanned = []
             if (location.pathname === '/watch/') {
-                meow = document.querySelectorAll('div[class="j83agx80 cbu4d94t"]')
+                notScanned = document.querySelectorAll('div:not(.done)[class="j83agx80 cbu4d94t"]')
             } else if (location.pathname === '/') {
                 //đây là trang chủ
-                meow = document.querySelectorAll('div[data-pagelet^="FeedUnit_"]');
+                notScanned = document.querySelectorAll('div:not(.done)[data-pagelet^="FeedUnit_"]');
             }
-            meow.forEach((ele) => {
+            notScanned.forEach((ele) => {
+                ele.setAttribute("class", "done");
                 Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
                     if (ele && ele.innerText.indexOf(ads) !== -1) {
                         ele.remove()
@@ -46,15 +47,17 @@
                     }
                 })).then()
             })
+            notScanned.length = 0
             if (limit_post) {
-                if (meow.length > maxPost) {
-                    let dif = meow.length - maxPost;
+                let scanned = document.querySelectorAll('div.done[data-pagelet^="FeedUnit_"]');
+                let dif = scanned.length - maxPost
+                if (dif > 0) {
                     for (let i = 0; i < dif; i++) {
-                        meow[i].remove()
+                        scanned[i].remove()
                     }
                 }
+                scanned.length = 0
             }
-
             isRuning = false
         }
 

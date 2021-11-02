@@ -43,7 +43,7 @@
                     }
                 })).then()
             })
-
+            notScanned = null
             if (isLimitPost) {
                 let scanned
                 if (location.pathname === '/watch/') {
@@ -51,15 +51,14 @@
                 } else if (location.pathname === '/') {
                     scanned = document.querySelectorAll('div.done[data-pagelet^="FeedUnit_"]');
                 }
-                let dif = scanned.length + notScanned.length - maxPost
+                let dif = scanned.length - maxPost
                 if (dif > 0) {
                     for (let i = 0; i < dif; i++) {
                         scanned[i].remove()
                     }
                 }
-                scanned.length = 0
+                scanned = null
             }
-            notScanned.length = 0
             isRuning = false
         }
 

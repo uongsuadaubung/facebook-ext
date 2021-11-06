@@ -34,7 +34,7 @@
                 //đây là trang chủ
                 notScanned = document.querySelectorAll('div:not(.done)[data-pagelet^="FeedUnit_"]');
             }
-            notScanned.forEach((ele) => {
+            notScanned.forEach(ele => {
                 ele.classList.add("done");
                 Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
                     if (ele && ele.innerText.indexOf(ads) !== -1) {
@@ -45,7 +45,7 @@
             })
             notScanned = null
             if (isLimitPost) {
-                let scanned
+                let scanned = []
                 if (location.pathname === '/watch/') {
                     scanned = document.querySelectorAll('div.j83agx80.cbu4d94t.done')
                 } else if (location.pathname === '/') {
@@ -92,19 +92,46 @@
                 while (nodeDiv.parentNode.nodeName !== 'A') {
                     nodeDiv = nodeDiv.parentNode
                 }
-                if (!nodeDiv.isEncrypted || (!nodeDiv.isHover && name.innerText !== nodeDiv.encrypt)) {
+                if (!nodeDiv.isEncrypted) {
                     nodeDiv.isEncrypted ??= true
                     nodeDiv.backupName ??= name.innerText
                     nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
                     name.innerText = nodeDiv.encrypt
-                    nodeDiv.onmouseover = function () {
+                    name.MouseOver = function (){
                         nodeDiv.isHover = true
                         name.innerText = nodeDiv.backupName
                     }
-                    nodeDiv.onmouseout = function () {
+                    name.MouseOut = function (){
                         nodeDiv.isHover = false
                         name.innerText = nodeDiv.encrypt
                     }
+                    nodeDiv.addEventListener('mouseover', name.MouseOver)
+                    nodeDiv.addEventListener('mouseout', name.MouseOut)
+
+                }else if (nodeDiv.isEncrypted && !nodeDiv.isHover && name.innerText !== nodeDiv.encrypt){
+                    name.innerText = nodeDiv.encrypt
+                }
+            }
+        }
+    }
+    let showName = () => {
+        let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
+        for (const name of span) {
+            if (name.innerText) {
+                let nodeDiv = name.parentNode
+                while (nodeDiv.parentNode.nodeName !== 'A') {
+                    nodeDiv = nodeDiv.parentNode
+                }
+                if (nodeDiv.isEncrypted) {
+                    name.innerText = nodeDiv.backupName
+                    nodeDiv.removeEventListener('mouseover', name.MouseOver)
+                    nodeDiv.removeEventListener('mouseout', name.MouseOut)
+                    delete nodeDiv.isEncrypted
+                    delete nodeDiv.encrypt
+                    delete nodeDiv.backupName
+                    delete name.MouseOver
+                    delete name.MouseOut
+
                 }
             }
         }
@@ -116,18 +143,41 @@
             while (nodeA.nodeName !== 'A'){
                 nodeA = nodeA.parentNode
             }
-            if (!nodeA.isHideImage || (!nodeA.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")){
+            if (!nodeA.isHideImage){
                 nodeA.isHideImage ??= true
                 nodeA.backupImage ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
-                nodeA.onmouseover = ()=>{
+                img.MouseOver = function () {
                     nodeA.isHover = true
                     img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
                 }
-                nodeA.onmouseout=()=>{
+                img.MouseOut = function (){
                     nodeA.isHover = false
                     img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
                 }
+                nodeA.addEventListener('mouseover', img.MouseOver)
+                nodeA.addEventListener('mouseout', img.MouseOut)
+            }else if (nodeA.isHideImage || (!nodeA.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")){
+                img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
+            }
+
+        }
+    }
+    let showImage= () =>{
+        let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
+        for (const img of images) {
+            let nodeA = img.parentNode // ở đây dùng nodeA mà bên trên không dùng vì tránh gán đè event
+            while (nodeA.nodeName !== 'A'){
+                nodeA = nodeA.parentNode
+            }
+            if (nodeA.isHideImage){
+                img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
+                nodeA.removeEventListener('mouseover', img.MouseOver)
+                nodeA.removeEventListener('mouseout', img.MouseOut)
+                delete nodeA.isHideImage
+                delete nodeA.backupImage
+                delete img.MouseOver
+                delete img.MouseOut
             }
 
         }
@@ -157,35 +207,64 @@
     sendMessage("todo","show")
     onMessage['addListener']( request => {
         switch (request.message) {
-            case "most_recent":{
+            case "most_recent":{ //worked restart require
                 most_recent = request.value
                 break
             }
-            case "freeze_newsfeed":{
+            case "freeze_newsfeed":{ //worked
                 location.reload()
                 break
             }
-            case "limit_post":{
+            case "limit_post":{  //worked
                 isLimitPost = request.value
                 break
             }
-            case "amount":{
+            case "amount":{ // worked
                 maxPost = request.value
                 break
             }
-            case "hide_contact":{
+            case "hide_contact":{ //worked
                 isAllowHideContact = request.value
+                if (isAllowHideContact){
+                    //bật
+                    // khi đang cho phép thì mới bật
+                    if (isAllowHideContact_name){
+                        hideName()
+                    }
+                    if (isAllowHideContact_image){
+                        hideImage()
+                    }
+                }else {
+                    //tắt
+                    // khi đang cho phép thì mới tắt
+                    if (isAllowHideContact_name){
+                        showName()
+                    }
+                    if (isAllowHideContact_image){
+                        showImage()
+                    }
+                }
                 break
             }
-            case "hide_contact_name":{
+            case "hide_contact_name":{ //worked
                 isAllowHideContact_name = request.value
+                if (isAllowHideContact_name){
+                    hideName()
+                }else {
+                    showName()
+                }
                 break
             }
-            case "hide_contact_image":{
+            case "hide_contact_image":{ //worked
                 isAllowHideContact_image = request.value
+                if (isAllowHideContact_image){
+                    hideImage()
+                }else {
+                    showImage()
+                }
                 break
             }
-            case "remove_post":{
+            case "remove_post":{ //worked
                 isAllowRemovePost = request.value
                 break
             }

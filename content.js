@@ -48,12 +48,10 @@
             }
             for (const ele of notScanned) {
                 ele.classList.add("done");
-                await Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
-                    if (ele && ele.innerText.indexOf(ads) !== -1) {
-                        ele.remove()
-                        console.log("Meow meow đã xoá quảng cáo", ele.innerText.slice(0,20))
-                    }
-                }))
+                if (stringAds.some(ads=>ele.innerText.includes(ads))){
+                    ele.remove()
+                    console.log("Meow meow đã xoá quảng cáo", ele.innerText.slice(0,20))
+                }
             }
             notScanned = null
             if (isLimitPost) {

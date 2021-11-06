@@ -7,7 +7,7 @@
             ["blocking"]
         );
     }
-    chrome['runtime']['onMessage']['addListener'](message=>{
+    onMessage['addListener'](message=>{
         if (message['todo'] === "show"){
             chrome['tabs']['query']({active:true, currentWindow:true}, tabs=>{
                 chrome['pageAction']['show'](tabs[0].id)

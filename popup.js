@@ -1,4 +1,4 @@
-window.onload = async function() {
+window.addEventListener('load', async ()=>{
     let most_recent_ele = document.getElementById("most_recent")
     let limit_amount_ele = document.getElementById("limit_amount")
     let limit_post_ele = document.getElementById("limit_post")
@@ -101,7 +101,7 @@ window.onload = async function() {
         save('string_ads', string_ads)
     }
 
-    let addToTable = (value, method)=>{
+    function addToTable (value, method){
         const table_ads_ele = document.getElementById("table_ads")
         const rowCount = table_ads_ele.rows.length;
         const row = table_ads_ele.insertRow(rowCount);
@@ -112,7 +112,7 @@ window.onload = async function() {
         deletebtn.type = "button"
         deletebtn.innerText = "Xoá"
         deletebtn.className = "btn btn-danger btn-sm"
-        deletebtn.onclick = ()=>{
+        deletebtn.addEventListener('click',()=>{
             let index = string_ads.findIndex(i=>i===value)
             if (index!== -1){
                 let value = string_ads.splice(index,1)
@@ -121,7 +121,7 @@ window.onload = async function() {
                 save('string_ads', string_ads)
                 sendMessage('toContent',{message: "string_ads", method:"delete", value: value[0]})
             }
-        }
+        })
         if (method === 'add'){ // add || load
             string_ads.push(value)
             save('string_ads', string_ads)
@@ -133,20 +133,20 @@ window.onload = async function() {
     for (const stringAd of string_ads) {
         addToTable(stringAd, 'load')
     }
-    most_recent_ele.addEventListener("change", function() {
+    most_recent_ele.addEventListener("change", ()=> {
         save('most_recent', most_recent_ele.checked)
         sendMessage('toContent',{message: "most_recent", value: most_recent_ele.checked})
     })
-    freeze_newsfeed_ele.addEventListener("change", function() {
+    freeze_newsfeed_ele.addEventListener("change", ()=> {
         save('freeze_newsfeed', freeze_newsfeed_ele.checked)
         sendMessage('toContent',{message: "freeze_newsfeed", value: freeze_newsfeed_ele.checked})
         setTimeout(reload, 50)
     })
-    limit_amount_ele.addEventListener("change", function() {
+    limit_amount_ele.addEventListener("change", ()=> {
         save('amount', Number(limit_amount_ele.value))
         sendMessage('toContent',{message: "amount", value: Number(limit_amount_ele.value)})
     })
-    limit_post_ele.addEventListener("change", function() {
+    limit_post_ele.addEventListener("change", ()=> {
         let res = limit_post_ele.checked
         if (res){
             document.getElementById("group_limit_amount").classList.remove("d-none");
@@ -156,7 +156,7 @@ window.onload = async function() {
         save('limit_post', res)
         sendMessage('toContent',{message: "limit_post", value:res})
     })
-    hide_contact_ele.addEventListener("change", function() {
+    hide_contact_ele.addEventListener("change", ()=> {
         let res = hide_contact_ele.checked
         if (res){
             document.getElementById("group_contact").classList.remove("d-none");
@@ -167,16 +167,16 @@ window.onload = async function() {
         sendMessage('toContent',{message: "hide_contact", value:res})
     })
 
-    hide_contact_name_ele.addEventListener('change',()=>{
+    hide_contact_name_ele.addEventListener('change', ()=>{
         save('hide_contact_name', hide_contact_name_ele.checked)
         sendMessage('toContent',{message: "hide_contact_name", value: hide_contact_name_ele.checked})
     })
-    hide_contact_image_ele.addEventListener('change',()=>{
+    hide_contact_image_ele.addEventListener('change', ()=>{
         save('hide_contact_image', hide_contact_image_ele.checked)
         sendMessage('toContent',{message: "hide_contact_image", value: hide_contact_image_ele.checked})
     })
 
-    remove_post_ele.addEventListener("change", function() {
+    remove_post_ele.addEventListener("change", ()=> {
         let res = remove_post_ele.checked
         if (res){
             document.getElementById("group_keywords").classList.remove("d-none");
@@ -186,10 +186,10 @@ window.onload = async function() {
         save('remove_post', res)
         sendMessage('toContent',{message: "remove_post", value:res})
     })
-    btn_add_ele.addEventListener('click', ()=>{
+    btn_add_ele.addEventListener('click',  ()=>{
         let inputkeyword = document.getElementById('inputkeyword')
         let input = inputkeyword.value
-        if (string_ads.findIndex(i=>i===input)!==-1){
+        if (string_ads.findIndex(i => i===input)!==-1){
             showAlert('Keyword đã tồn tại')
             return
         }
@@ -201,7 +201,7 @@ window.onload = async function() {
         }
 
     })
-    let showAlert = (message, timeout = 2000)=>{
+    function showAlert (message, timeout = 2000){
         let alert = document.getElementById('alert_danger')
         alert.classList.remove('d-none')
         alert.innerText = message
@@ -209,4 +209,4 @@ window.onload = async function() {
             alert.classList.add('d-none')
         },timeout)
     }
-}
+})

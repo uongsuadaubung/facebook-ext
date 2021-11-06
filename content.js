@@ -14,17 +14,29 @@
         "Gợi ý cho bạn"
     ]
     let isRuning = false
-    let maxPost = (await load('amount')) ?? 30
 
+    let maxPost = (await load('amount')) ?? 30
     let isLimitPost = (await load('limit_post')) ?? true
+
     let isAllowRemovePost = (await load('remove_post')) ?? true
 
     let isAllowHideContact = (await load('hide_contact')) ?? true
     let isAllowHideContact_name = (await load('hide_contact_name')) ?? true
     let isAllowHideContact_image = (await load('hide_contact_image')) ?? true
 
+    let isAllowHideStories = (await load('hide_stories')) ?? true
+/////////////////////////////////////////////////////////////////////////////////////function
+    function hideStories() {
+        let storyNode = document.querySelector('div[data-pagelet="Stories"]')
+        storyNode.style.display = 'none'
+    }
 
-    let removeAds = () => {
+    function showStories() {
+        let storyNode = document.querySelector('div[data-pagelet="Stories"]')
+        storyNode.style.display = ''
+    }
+
+    async function removeAds () {
         if (!isRuning && isAllowRemovePost) {
             isRuning = true
             let notScanned = []
@@ -34,15 +46,15 @@
                 //đây là trang chủ
                 notScanned = document.querySelectorAll('div:not(.done)[data-pagelet^="FeedUnit_"]');
             }
-            notScanned.forEach(ele => {
+            for (const ele of notScanned) {
                 ele.classList.add("done");
-                Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
+                await Promise.all(stringAds.map(ads => { // mặc dù dùng loop thông thường mất khoảng hơn 100ms và promiseall mất có 1ms tuy đều không thể nhận ra bằng mắt nhưng thôi ksao
                     if (ele && ele.innerText.indexOf(ads) !== -1) {
                         ele.remove()
                         console.log("Meow meow đã xoá quảng cáo", ele.innerText.slice(0,20))
                     }
-                })).then()
-            })
+                }))
+            }
             notScanned = null
             if (isLimitPost) {
                 let scanned = []
@@ -64,27 +76,29 @@
 
     }
 
-    let changeLink = () => {
+    function changeLink() {
         if (most_recent) {
             let atags = document.getElementsByTagName('a')
             for (const a of atags) {
                 if (a.href === 'https://www.facebook.com/') {
                     a.href = 'https://www.facebook.com/?sk=h_chr'
-                    a.onclick = () => {
+                    a.addEventListener('click', () => {
                         location.replace('https://www.facebook.com/?sk=h_chr')
-                    }
-                }else if (a.href === 'https://www.facebook.com/watch/'){
-                    a.onclick = () =>{
+                    } )
+                } else if (a.href === 'https://www.facebook.com/watch/') {
+                    a.addEventListener('click', () => {
                         location.replace('https://www.facebook.com/watch/')
-                    }
+                    })
                 }
             }
         }
     }
-    let encryptName = name =>{
-        return name.split('').sort(()=>0.5 - Math.random()).join('')
+
+    function encryptName(name) {
+        return name.split('').sort(() => 0.5 - Math.random()).join('')
     }
-    let hideName = () => {
+
+    function hideName() {
         let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
         for (const name of span) {
             if (name.innerText) {
@@ -97,24 +111,25 @@
                     nodeDiv.backupName ??= name.innerText
                     nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
                     name.innerText = nodeDiv.encrypt
-                    name.MouseOver = function (){
+                    name.MouseOver = function () {
                         nodeDiv.isHover = true
                         name.innerText = nodeDiv.backupName
                     }
-                    name.MouseOut = function (){
+                    name.MouseOut = function () {
                         nodeDiv.isHover = false
                         name.innerText = nodeDiv.encrypt
                     }
                     nodeDiv.addEventListener('mouseover', name.MouseOver)
                     nodeDiv.addEventListener('mouseout', name.MouseOut)
 
-                }else if (nodeDiv.isEncrypted && !nodeDiv.isHover && name.innerText !== nodeDiv.encrypt){
+                } else if (nodeDiv.isEncrypted && !nodeDiv.isHover && name.innerText !== nodeDiv.encrypt) {
                     name.innerText = nodeDiv.encrypt
                 }
             }
         }
     }
-    let showName = () => {
+
+    function showName() {
         let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
         for (const name of span) {
             if (name.innerText) {
@@ -136,14 +151,15 @@
             }
         }
     }
-    let hideImage= () =>{
+
+    function hideImage() {
         let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
         for (const img of images) {
             let nodeA = img.parentNode // ở đây dùng nodeA mà bên trên không dùng vì tránh gán đè event
-            while (nodeA.nodeName !== 'A'){
+            while (nodeA.nodeName !== 'A') {
                 nodeA = nodeA.parentNode
             }
-            if (!nodeA.isHideImage){
+            if (!nodeA.isHideImage) {
                 nodeA.isHideImage ??= true
                 nodeA.backupImage ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
@@ -151,26 +167,27 @@
                     nodeA.isHover = true
                     img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
                 }
-                img.MouseOut = function (){
+                img.MouseOut = function () {
                     nodeA.isHover = false
                     img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
                 }
                 nodeA.addEventListener('mouseover', img.MouseOver)
                 nodeA.addEventListener('mouseout', img.MouseOut)
-            }else if (nodeA.isHideImage || (!nodeA.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")){
+            } else if (nodeA.isHideImage || (!nodeA.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")) {
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
             }
 
         }
     }
-    let showImage= () =>{
+
+    function showImage() {
         let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
         for (const img of images) {
             let nodeA = img.parentNode // ở đây dùng nodeA mà bên trên không dùng vì tránh gán đè event
-            while (nodeA.nodeName !== 'A'){
+            while (nodeA.nodeName !== 'A') {
                 nodeA = nodeA.parentNode
             }
-            if (nodeA.isHideImage){
+            if (nodeA.isHideImage) {
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
                 nodeA.removeEventListener('mouseover', img.MouseOver)
                 nodeA.removeEventListener('mouseout', img.MouseOut)
@@ -182,11 +199,14 @@
 
         }
     }
-    window.onload = () => {
-        // document.title = document.title.replaceAll("Facebook", "Hạnh Xấu Xí")
-        changeLink()
-        removeAds()
 
+    ///////////////////////////////////////////////////////////////////////////////event
+    document.addEventListener('DOMContentLoaded', ()=>{
+        removeAds()
+        changeLink()
+        if (isAllowHideStories){
+            hideStories()
+        }
         if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_image) {
             hideImage()
             setTimeout(hideImage,1000)
@@ -199,13 +219,14 @@
             setTimeout(hideName,2000)
             // intervalHideName = setInterval(hideName, 1000)
         }
-    }
-    window.onscroll = function () {
+    })
+
+    window.addEventListener('scroll', () => {
         // called when the window is scrolled.
         removeAds()
-    }
+    })
     sendMessage("todo","show")
-    onMessage['addListener']( request => {
+    onMessage['addListener']( (request) => {
         switch (request.message) {
             case "most_recent":{ //worked restart require
                 most_recent = request.value
@@ -279,5 +300,8 @@
         }
 
     });
-    //TODO: sau khi nhận được event thì chạy lại 1 số thứ tương ứng
+    /////////////////////////////////////////////////
+    //DOMContentLoaded: the browser fully loaded HTML, and the DOM tree is built, but external resources like pictures <img> and stylesheets may not yet have loaded.
+    //load: not only HTML is loaded, but also all the external resources: images, styles etc.
+    //beforeunload, unload: the user is leaving the page.
 })()

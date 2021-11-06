@@ -2,11 +2,6 @@
     let freezeNewsFeed = (await load('freeze_newsfeed')) ?? false
     let blockUrls = (await load('block_urls')) ?? ["nw/","api/graphql/"]
     if (freezeNewsFeed){
-        // chrome['webRequest']['onBeforeRequest']['addListener'](
-        //     ()=> { return {cancel: true}; },
-        //     {urls: blockUrls},
-        //     ["blocking"]
-        // );
         chrome['webRequest']['onBeforeRequest']['addListener'](
             function(details) {
                 return {cancel: blockUrls.some(keyword => details.url.includes(keyword))};

@@ -24,16 +24,17 @@
     let isAllowHideContact_name = (await load('hide_contact_name')) ?? true
     let isAllowHideContact_image = (await load('hide_contact_image')) ?? true
 
-    let isAllowHideStories = (await load('hide_stories')) ?? true
+    let isAllowHideStories = (await load('hide_stories')) ?? false
 /////////////////////////////////////////////////////////////////////////////////////function
-    function hideStories() {
+    function hideStories(hide) {
         let storyNode = document.querySelector('div[data-pagelet="Stories"]')
-        storyNode.style.display = 'none'
-    }
-
-    function showStories() {
-        let storyNode = document.querySelector('div[data-pagelet="Stories"]')
-        storyNode.style.display = ''
+        if (storyNode){
+            if (hide){
+                storyNode.style.display = 'none'
+            }else {
+                storyNode.style.display = ''
+            }
+        }
     }
 
     async function removeAds () {
@@ -200,11 +201,12 @@
 
     ///////////////////////////////////////////////////////////////////////////////event
     document.addEventListener('DOMContentLoaded', ()=>{
+        // cái này chỉ khi lần đầu tải mới trang
+    })
+    window.addEventListener('load', ()=>{
+        hideStories(isAllowHideStories)
         removeAds()
         changeLink()
-        if (isAllowHideStories){
-            hideStories()
-        }
         if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_image) {
             hideImage()
             setTimeout(hideImage,1000)
@@ -218,7 +220,6 @@
             // intervalHideName = setInterval(hideName, 1000)
         }
     })
-
     window.addEventListener('scroll', () => {
         // called when the window is scrolled.
         removeAds()
@@ -293,6 +294,11 @@
                 }else {
                     stringAds = stringAds.filter(i=> i!== request.value)
                 }
+                break
+            }
+            case "hide_stories":{
+                isAllowHideStories = request.value
+                hideStories(isAllowHideStories)
                 break
             }
         }

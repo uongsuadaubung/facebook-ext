@@ -8,7 +8,7 @@ window.addEventListener('load', async ()=>{
     let hide_contact_image_ele = document.getElementById("hide_contact_image")
     let hide_contact_ele = document.getElementById("hide_contact")
     let freeze_newsfeed_ele = document.getElementById("freeze_newsfeed")
-
+    let hide_stories_ele = document.getElementById('hide_stories')
     ///////////////////////////////////////////////////////////////////////////////////////
     let isMostRecent = await load('most_recent')
     if (isMostRecent === undefined){
@@ -86,6 +86,15 @@ window.addEventListener('load', async ()=>{
         document.getElementById("group_keywords").classList.remove("d-none");
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    let isHideStory = await load('hide_stories')
+    if (isHideStory === undefined){
+        save('hide_stories', false)
+        isHideStory = false
+    }
+    if (isHideStory){
+        hide_stories_ele.checked = true
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
     let string_ads = await load('string_ads')
     if (string_ads === undefined){
         string_ads =
@@ -209,4 +218,8 @@ window.addEventListener('load', async ()=>{
             alert.classList.add('d-none')
         },timeout)
     }
+    hide_stories_ele.addEventListener("change", ()=> {
+        save('hide_stories', hide_stories_ele.checked)
+        sendMessage('toContent',{message: "hide_stories", value:hide_stories_ele.checked})
+    })
 })

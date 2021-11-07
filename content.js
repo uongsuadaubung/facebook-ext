@@ -77,14 +77,16 @@
 
     function changeLink() {
         if (most_recent) {
-            let atags = document.getElementsByTagName('a')
+            let atags = document.querySelectorAll('a[href="/"]')
             for (const a of atags) {
-                if (a.href === 'https://www.facebook.com/') {
                     a.href = 'https://www.facebook.com/?sk=h_chr'
                     a.addEventListener('click', () => {
                         location.replace('https://www.facebook.com/?sk=h_chr')
                     } )
-                } else if (a.href === 'https://www.facebook.com/watch/') {
+            }
+            atags = document.querySelectorAll('a[href="https://www.facebook.com/watch/"]')
+            for (const a of atags) {
+                 if (a.href === 'https://www.facebook.com/watch/') {
                     a.addEventListener('click', () => {
                         location.replace('https://www.facebook.com/watch/')
                     })

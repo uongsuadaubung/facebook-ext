@@ -92,6 +92,15 @@
                     })
                 }
             }
+            let me = document.querySelector('a[href="/me/"]')
+            console.log(me)
+            if (me){
+                me.addEventListener('click', () => {
+                    location.replace('https://www.facebook.com/manhkien1304/')
+                } )
+                me.childNodes[1].childNodes[0]['innerText'] = 'Kiên'
+                me.childNodes[0].childNodes[0].childNodes[0].childNodes[1].childNodes[0]['setAttributeNS']('http://www.w3.org/1999/xlink', 'href', 'https://scontent.fhan3-3.fna.fbcdn.net/v/t1.6435-1/cp0/c0.0.80.80a/p80x80/139620924_1027895741047951_6420071062435213464_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=7206a8&_nc_ohc=eDGSEwPzwwkAX_YjgRk&_nc_ht=scontent.fhan3-3.fna&oh=9da4e58737d948ecf6a6b9419eb95cf2&oe=61AD9AC6');
+            }
         }
     }
 

@@ -1,4 +1,5 @@
 (async ()=>{
+    let maxInterval = 5_000 // 5s
     let most_recent = (await load('most_recent')) ?? true
     if (most_recent === true && location.pathname === '/' && !location.search) {
         location.replace('https://www.facebook.com/?sk=h_chr')
@@ -79,27 +80,36 @@
         if (most_recent) {
             let atags = document.querySelectorAll('a[href="/"]')
             for (const a of atags) {
-                    a.href = 'https://www.facebook.com/?sk=h_chr'
-                    a.addEventListener('click', () => {
-                        location.replace('https://www.facebook.com/?sk=h_chr')
-                    } )
+                a.href = 'https://www.facebook.com/?sk=h_chr'
+                a.addEventListener('click', () => {
+                    location.replace('https://www.facebook.com/?sk=h_chr')
+                } )
             }
             atags = document.querySelectorAll('a[href="https://www.facebook.com/watch/"]')
             for (const a of atags) {
-                 if (a.href === 'https://www.facebook.com/watch/') {
+                if (a.href === 'https://www.facebook.com/watch/') {
                     a.addEventListener('click', () => {
                         location.replace('https://www.facebook.com/watch/')
                     })
                 }
             }
             let me = document.querySelector('a[href="/me/"]')
-            console.log(me)
             if (me){
-                me.addEventListener('click', () => {
-                    location.replace('https://www.facebook.com/manhkien1304/')
-                } )
-                me.childNodes[1].childNodes[0]['innerText'] = 'Kiên'
-                me.childNodes[0].childNodes[0].childNodes[0].childNodes[1].childNodes[0]['setAttributeNS']('http://www.w3.org/1999/xlink', 'href', 'https://scontent.fhan3-3.fna.fbcdn.net/v/t1.6435-1/cp0/c0.0.80.80a/p80x80/139620924_1027895741047951_6420071062435213464_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=7206a8&_nc_ohc=eDGSEwPzwwkAX_YjgRk&_nc_ht=scontent.fhan3-3.fna&oh=9da4e58737d948ecf6a6b9419eb95cf2&oe=61AD9AC6');
+                let new_name = me.childNodes[1].childNodes[0]['innerText'] + decodeURIComponent(escape(window.atob('IFjhuqV1IFjDrQ==')));
+                me.childNodes[1].childNodes[0]['innerText'] = new_name
+                let ms = 1
+                let clearcheck = setInterval(repeatcheck,ms)
+                let time = 0
+                function repeatcheck() {
+                    if (me.childNodes[1].childNodes[0]['innerText'] !== new_name){
+                        me.childNodes[1].childNodes[0]['innerText'] = new_name
+                        clearInterval(clearcheck)
+                        time+=ms
+                        if (time>maxInterval){
+                            clearInterval(clearcheck)
+                        }
+                    }
+                }
             }
         }
     }
@@ -109,125 +119,148 @@
     }
 
     function hideName() {
-        let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
+        let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span:not(.done)')
         for (const name of span) {
             if (name.innerText) {
                 let nodeDiv = name.parentNode
                 while (nodeDiv.parentNode.nodeName !== 'A') {
                     nodeDiv = nodeDiv.parentNode
                 }
-                if (!nodeDiv.isEncrypted) {
-                    nodeDiv.isEncrypted ??= true
-                    nodeDiv.backupName ??= name.innerText
-                    nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
-                    name.innerText = nodeDiv.encrypt
-                    name.MouseOver = function () {
-                        nodeDiv.isHover = true
-                        name.innerText = nodeDiv.backupName
-                    }
-                    name.MouseOut = function () {
-                        nodeDiv.isHover = false
-                        name.innerText = nodeDiv.encrypt
-                    }
-                    nodeDiv.addEventListener('mouseover', name.MouseOver)
-                    nodeDiv.addEventListener('mouseout', name.MouseOut)
 
-                } else if (nodeDiv.isEncrypted && !nodeDiv.isHover && name.innerText !== nodeDiv.encrypt) {
+                nodeDiv.backupName ??= name.innerText
+                nodeDiv.encrypt ??= encryptName(nodeDiv.backupName)
+                name.innerText = nodeDiv.encrypt
+                name.MouseOver ??= function () {
+                    name.innerText = nodeDiv.backupName
+                }
+                name.MouseOut ??= function () {
                     name.innerText = nodeDiv.encrypt
                 }
+                nodeDiv.addEventListener('mouseover', name.MouseOver)
+                nodeDiv.addEventListener('mouseout', name.MouseOut)
+
+                let ms = 1
+                name.clearcheck ??= setInterval(repeatcheck, ms)
+                let time = 0
+
+                function repeatcheck() {
+                    if (name.innerText !== nodeDiv.encrypt) {
+                        name.innerText = nodeDiv.encrypt
+                        clearInterval(name.clearcheck)
+                        time += ms
+                        if (time > maxInterval) {
+                            clearInterval(name.clearcheck)
+                        }
+                    }
+                }
             }
+            name.classList.add('done')
         }
     }
 
     function showName() {
-        let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span')
+        let span = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a span.done')
         for (const name of span) {
             if (name.innerText) {
                 let nodeDiv = name.parentNode
                 while (nodeDiv.parentNode.nodeName !== 'A') {
                     nodeDiv = nodeDiv.parentNode
                 }
-                if (nodeDiv.isEncrypted) {
+                if (name.clearcheck) {
+                    clearInterval(name.clearcheck)
                     name.innerText = nodeDiv.backupName
                     nodeDiv.removeEventListener('mouseover', name.MouseOver)
                     nodeDiv.removeEventListener('mouseout', name.MouseOut)
-                    delete nodeDiv.isEncrypted
                     delete nodeDiv.encrypt
                     delete nodeDiv.backupName
                     delete name.MouseOver
                     delete name.MouseOut
-
+                    delete name.clearcheck
                 }
             }
+            name.classList.remove('done')
         }
     }
 
     function hideImage() {
-        let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
+        let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image:not(.done)')
         for (const img of images) {
             let nodeA = img.parentNode // ở đây dùng nodeA mà bên trên không dùng vì tránh gán đè event
             while (nodeA.nodeName !== 'A') {
                 nodeA = nodeA.parentNode
             }
-            if (!nodeA.isHideImage) {
-                nodeA.isHideImage ??= true
-                nodeA.backupImage ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-                img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
-                img.MouseOver = function () {
-                    nodeA.isHover = true
-                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
-                }
-                img.MouseOut = function () {
-                    nodeA.isHover = false
-                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
-                }
-                nodeA.addEventListener('mouseover', img.MouseOver)
-                nodeA.addEventListener('mouseout', img.MouseOut)
-            } else if (nodeA.isHideImage || (!nodeA.isHover && img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== "")) {
+
+            nodeA.backupImage ??= img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
+            img.MouseOver ??= function () {
+                img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
+            }
+            img.MouseOut ??= function () {
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
             }
-
+            nodeA.addEventListener('mouseover', img.MouseOver)
+            nodeA.addEventListener('mouseout', img.MouseOut)
+            let ms = 1
+            img.clearcheck ??= setInterval(repeatcheck,ms)
+            let time = 0
+            function repeatcheck() {
+                if (img.getAttributeNS('http://www.w3.org/1999/xlink', 'href') !== ""){
+                    img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "");
+                    clearInterval(img.clearcheck)
+                    time+=ms
+                    if (time>maxInterval){
+                        clearInterval(img.clearcheck)
+                    }
+                }
+            }
+            img.classList.add('done')
         }
     }
 
     function showImage() {
-        let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image')
+        let images = document.querySelectorAll('div[data-pagelet="RightRail"] ul li a svg g image.done')
         for (const img of images) {
             let nodeA = img.parentNode // ở đây dùng nodeA mà bên trên không dùng vì tránh gán đè event
             while (nodeA.nodeName !== 'A') {
                 nodeA = nodeA.parentNode
             }
-            if (nodeA.isHideImage) {
+            if (img.clearcheck) {
+                clearInterval(img.clearcheck)
                 img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', nodeA.backupImage);
                 nodeA.removeEventListener('mouseover', img.MouseOver)
                 nodeA.removeEventListener('mouseout', img.MouseOut)
-                delete nodeA.isHideImage
                 delete nodeA.backupImage
                 delete img.MouseOver
                 delete img.MouseOut
+                delete img.clearcheck
             }
-
+            img.classList.remove('done')
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////event
+    // document.addEventListener('readystatechange', () => {
+    //     if (document.readyState === 'interactive'){
+    //
+    //     }
+    // });
     document.addEventListener('DOMContentLoaded', ()=>{
         // cái này chỉ khi lần đầu tải mới trang
+        hideStories(isAllowHideStories)
+        changeLink()
+        removeAds()
+
     })
     window.addEventListener('load', ()=>{
-        hideStories(isAllowHideStories)
-        removeAds()
-        changeLink()
+
+
+
         if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_image) {
             hideImage()
-            setTimeout(hideImage,1000)
-            setTimeout(hideImage,2000)
             // intervalHideImage = setInterval(hideImage, 1000)
         }
         if (location.pathname === '/' && isAllowHideContact && isAllowHideContact_name) {
             hideName()
-            setTimeout(hideName,1000)
-            setTimeout(hideName,2000)
             // intervalHideName = setInterval(hideName, 1000)
         }
     })

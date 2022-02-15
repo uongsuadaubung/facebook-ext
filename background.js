@@ -1,7 +1,12 @@
 (async ()=>{
     let freezeNewsFeed = (await load('freeze_newsfeed')) ?? false
     let blockUrls = (await load('block_urls')) ?? []
-    let freezeNewsFeedUrls = ["https://www.facebook.com/nw/","https://www.facebook.com/api/graphql/"]
+    let freezeNewsFeedUrls = [
+        "https://www.facebook.com/nw/",
+        "https://www.facebook.com/api/graphql/",
+        "https://video.xx.fbcdn.net",
+        "https://scontent.xx.fbcdn.net",
+    ]
     //TODO: về sau làm nốt mục block other request
 
     chrome['webRequest']['onBeforeRequest']['addListener'](

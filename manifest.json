@@ -35,7 +35,8 @@
     "tabs",
     "webRequest",
     "webRequestBlocking",
-    "*://*.facebook.com/*"
+    "*://*.facebook.com/*",
+    "*://*.fbcdn.net/*"
 
   ]
 }
